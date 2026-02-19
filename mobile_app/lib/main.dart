@@ -89,7 +89,7 @@ class DigitalDoctorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Anaj.ai',
+      title: 'AgriShield',
       theme: AppTheme.getTheme(),
       debugShowCheckedModeBanner: false,
       home: SplashView(),

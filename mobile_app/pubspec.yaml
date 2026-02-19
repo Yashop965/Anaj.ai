@@ -1,5 +1,5 @@
-name: anaj_ai_mobile
-description: A new Flutter project for Anaj.ai.
+name: agrisheild
+description: AgriShield - Intelligent crop disease detection and treatment recommendation system.
 publish_to: 'none'
 version: 1.0.0+1
 
@@ -43,13 +43,21 @@ dependencies:
   shared_preferences: ^2.2.0
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.1
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+
+flutter_launcher_icons:
+  android: "ic_launcher"
+  ios: true
+  image_path: "assets/images/app_icon.png"
+  min_sdk_android: 21
 
 flutter:
   uses-material-design: true
   assets:
     - assets/models/crop_slm.tflite
+    - assets/images/app_icon.png
     - assets/models/labelmap.txt
     - assets/i18n/
