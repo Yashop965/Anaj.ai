@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import '../data/database_helper.dart';
+import 'theme/app_theme.dart';
 
 class HistoryView extends StatefulWidget {
   @override
@@ -30,8 +31,8 @@ class _HistoryViewState extends State<HistoryView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Scan History (इतिहास)"),
-        backgroundColor: Colors.green[800],
+        title: Text("Scan History"),
+        subtitle: Text("इतिहास"),
       ),
       body: _isLoading
           ? Center(child: CircularProgressIndicator())

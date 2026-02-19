@@ -4,7 +4,11 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../logic/ai_service.dart';
+import '../logic/firebase_auth_service.dart';
 import 'history_view.dart';
+import 'login_view.dart';
+import 'theme/app_theme.dart';
+import 'widgets/custom_widgets.dart';
 
 class DashboardView extends StatefulWidget {
   @override
@@ -21,8 +25,9 @@ class _DashboardViewState extends State<DashboardView> {
   
   Map<String, dynamic>? _lastResult;
   bool _isScanning = false;
-  double _healthScore = 0.85; // Mock daily score
+  double _healthScore = 0.85;
   File? _selectedImage;
+  int _selectedBottomNavIndex = 0;
 
   bool _isModelReady = false;
   bool _isLoadingModel = true;
@@ -133,149 +138,191 @@ class _DashboardViewState extends State<DashboardView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Anaj.ai"),
-        centerTitle: true,
-        backgroundColor: Colors.green[800],
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // 1. Health Score Card
-              _buildHealthScoreCard(),
-              SizedBox(height: 20),
-
-              // 2. Crop Selector
-              Text("Select Crop (फसल चुनें):", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 10),
-              Wrap(
-                spacing: 8.0,
-                children: _crops.map((crop) {
-                  return ChoiceChip(
-                    label: Text(crop),
-                    selected: _selectedCrop == crop,
-                    onSelected: (selected) {
-                      setState(() {
-                        _selectedCrop = crop;
-                      });
-                    },
-                    selectedColor: Colors.green[200],
-                  );
-                }).toList(),
-              ),
-              SizedBox(height: 30),
-
-              // 3. Scan Button
-              Center(
-                child: _isLoadingModel 
-                  ? Column(
-                      children: [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 10),
-                        Text("Loading AI Model...", style: TextStyle(color: Colors.grey))
-                      ],
-                    )
-                  : GestureDetector(
-                  onTap: _isScanning ? null : _scanCrop,
-                  child: Container(
-                    height: 180,
-                    width: 180,
-                    decoration: BoxDecoration(
-                      color: _isScanning ? Colors.grey : (_isModelReady ? Colors.green[700] : Colors.orange[700]),
-                      shape: BoxShape.circle,
-                      boxShadow: [BoxShadow(color: (_isModelReady ? Colors.green : Colors.orange).withOpacity(0.4), blurRadius: 20, spreadRadius: 5)],
-                    ),
-                    alignment: Alignment.center,
-                    child: _isScanning 
-                      ? CircularProgressIndicator(color: Colors.white)
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(_isModelReady ? Icons.camera_alt : Icons.cloud_upload, size: 60, color: Colors.white),
-                            Text(_isModelReady ? "SCAN" : "CLOUD SCAN", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                            Text(_isModelReady ? "(जांच करें)" : "(इंटरनेट आवश्यक)", style: TextStyle(color: Colors.white70, fontSize: 16)),
-                          ],
-                        ),
-                  ),
+      appBar: ARow(
+          children: [
+            Icon(Icons.eco, color: Colors.white),
+            SizedBox(width: 8),
+            Text("Anaj.ai"),
+          ],
+        ),
+        elevation: 0,
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) async {
+              if (value == 'logout') {
+                final firebaseAuth = FirebaseAuthService();
+                await firebaseAuth.signOut();
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => LoginView()),
+                );
+              } else if (value == 'profile') {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Profile feature coming soon")),
+                );
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+              PopupMenuItem<String>(
+                value: 'profile',
+                child: Row(
+                  children: [
+                    Icon(Icons.person),
+                    SizedBox(width: 10),
+                    Text('Profile'),
+                  ],
                 ),
               ),
-              if (!_isModelReady && !_isLoadingModel)
-                Padding(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  child: TextButton.icon(
-                    onPressed: _retryLocalModel,
-                    icon: Icon(Icons.refresh, color: Colors.green[800]),
-                    label: Text("Retry Local Model (लोकल मॉडल फिर से लोड करें)", 
-                      style: TextStyle(color: Colors.green[800], fontWeight: FontWeight.bold)),
-                  ),
+              PopupMenuItem<String>(
+                value: 'logout',
+                child: Row(
+                  children: [
+                    Icon(Icons.logout),
+                    SizedBox(width: 10),
+                    Text('Logout'),
+                  ],
                 ),
-              SizedBox(height: 20),
-              
-              // Gallery & History Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: _isScanning ? null : _pickFromGallery,
-                    icon: Icon(Icons.photo_library),
-                    label: Text("Gallery"),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey, foregroundColor: Colors.white),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                       Navigator.push(context, MaterialPageRoute(builder: (context) => HistoryView()));
-                    },
-                    icon: Icon(Icons.history),
-                    label: Text("History"),
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.orange[800], foregroundColor: Colors.white),
-                  ),
-                ],
               ),
-              if (_selectedImage != null) ...[
-                 SizedBox(height: 10),
-                 Center(child: Text("Last Image Captured", style: TextStyle(color: Colors.grey))),
-                 // SizedBox(height: 100, child: Image.file(_selectedImage!)) // Optional preview
-              ],
-              SizedBox(height: 30),
-
-              // 4. Results Section
-              if (_lastResult != null) _buildResultCard(),
             ],
           ),
-        ),
+        ],
+      ),
+      body: _isLoadingModel
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 16),
+                  Text("Loading AI Model...", style: AppTheme.getTheme().textTheme.bodyMedium),
+                ],
+              ),
+            )
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Header Section
+                    _buildHeaderSection(),
+                    SizedBox(height: 24),
+
+                    // Health Score Card
+                    HealthScoreCard(score: _healthScore, cropName: _selectedCrop),
+                    SizedBox(height: 24),
+
+                    // Main Action Cards
+                    ActionCard(
+                      icon: Icons.camera_alt,
+                      title: "Take Photo",
+                      subtitle: "Capture directly",
+                      onPressed: _isScanning ? null : _scanCrop,
+                      isPrimary: true,
+                    ),
+                    SizedBox(height: 12),
+
+                    ActionCard(
+                      icon: Icons.image,
+                      title: "Gallery Upload",
+                      subtitle: "Upload from device",
+                      onPressed: _isScanning ? null : _pickFromGallery,
+                      backgroundColor: Colors.grey[100],
+                    ),
+                    SizedBox(height: 24),
+
+                    // Crop Selector
+                    SectionTitle(
+                      title: "Select Crop",
+                      subtitle: "फसल चुनें",
+                    ),
+                    SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      children: _crops.map((crop) {
+                        return ChoiceChip(
+                          label: Text(crop),
+                          selected: _selectedCrop == crop,
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedCrop = crop;
+                            });
+                          },
+                        );
+                      }).toList(),
+                    ),
+                    SizedBox(height: 24),
+
+                    // History Button
+                    ElevatedButton.icon(
+                      icon: Icon(Icons.history),
+                      label: Text("View Analysis History"),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => HistoryView()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                      ),
+                    ),
+                    SizedBox(height: 16),
+
+                    // Results Section
+                    if (_lastResult != null) _buildResultCard(),
+                    SizedBox(height: 24),
+                  ],
+                ),
+              ),
+            ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedBottomNavIndex,
+        onTap: (index) {
+          setState(() {
+            _selectedBottomNavIndex = index;
+          });
+          // Add navigation logic here if needed
+          if (index == 2) {
+            // Navigate to Records
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HistoryView()),
+            );
+          }
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'HOME',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'COMMUNITY',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'RECORDS',
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildHealthScoreCard() {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Crop Health", style: TextStyle(fontSize: 18, color: Colors.grey[700])),
-                Text("फसल स्वास्थ", style: TextStyle(fontSize: 14, color: Colors.grey[500])),
-              ],
-            ),
-            CircularPercentIndicator(
-              radius: 40.0,
-              lineWidth: 10.0,
-              percent: _healthScore,
-              center: Text("${(_healthScore * 100).toInt()}%", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              progressColor: _healthScore > 0.7 ? Colors.green : Colors.orange,
-              backgroundColor: Colors.green[100]!,
-            ),
-          ],
+  Widget _buildHeaderSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Analyze Crop Health",
+          style: AppTheme.getTheme().textTheme.displayMedium,
         ),
+        SizedBox(height: 8),
+        Text(
+          "Instant AI diagnosis for pests and diseases.",
+          style: AppTheme.getTheme().textTheme.bodyMedium,
+        ),
+      ] ),
       ),
     );
   }
@@ -285,58 +332,104 @@ class _DashboardViewState extends State<DashboardView> {
     var label = _lastResult!['hindi_name'] ?? _lastResult!['label'];
     var actionPlan = _lastResult!['action_plan'];
 
+    Color resultColor = confidence > 0.7 ? AppTheme.dangerColor : AppTheme.warningColor;
+
     return Card(
-      color: Colors.green[50],
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          gradient: LinearGradient(
+            colors: [resultColor.withOpacity(0.1), resultColor.withOpacity(0.05)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        padding: const EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Icon(Icons.warning_amber_rounded, color: Colors.orange[800], size: 40),
-                SizedBox(width: 15),
+                Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: resultColor.withOpacity(0.2),
+                  ),
+                  padding: EdgeInsets.all(12),
+                  child: Icon(Icons.warning_amber_rounded, color: resultColor, size: 28),
+                ),
+                SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(label, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black87)),
-                      Text("Confidence: ${(confidence * 100).toStringAsFixed(1)}%", style: TextStyle(color: Colors.grey[700])),
+                      Text(
+                        label,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textPrimary,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        "Confidence: ${(confidence * 100).toStringAsFixed(1)}%",
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppTheme.textSecondary,
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ],
             ),
-            Divider(height: 30),
+            SizedBox(height: 16),
             ElevatedButton.icon(
-              icon: Icon(Icons.volume_up, size: 28),
-              label: Text("SUNO (सुनो)", style: TextStyle(fontSize: 20)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[600],
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-              ),
+              icon: Icon(Icons.volume_up),
+              label: Text("SUNO (सुनो)"),
               onPressed: () => _speak(_lastResult!['audio_text'] ?? ""),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primaryColor,
+              ),
             ),
-            SizedBox(height: 20),
-            if (actionPlan is List)
-              ...actionPlan.map<Widget>((step) => 
+            SizedBox(height: 16),
+            if (actionPlan is List && actionPlan.isNotEmpty) ...[
+              Text(
+                "Recommended Actions:",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
+              SizedBox(height: 12),
+              ...actionPlan.map<Widget>((step) =>
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  padding: const EdgeInsets.symmetric(vertical: 6),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.check_circle, color: Colors.green, size: 20),
-                      SizedBox(width: 10),
-                      Expanded(child: Text(step.toString(), style: TextStyle(fontSize: 16))),
+                      Icon(Icons.check_circle, color: AppTheme.successColor, size: 20),
+                      SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          step.toString(),
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: AppTheme.textPrimary,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                )
+                ),
               ).toList(),
+            ],
           ],
         ),
       ),
     );
   }
-}
