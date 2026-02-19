@@ -9,6 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # Firebase
+  firebase_core: ^3.10.1
+  firebase_auth: ^5.4.1
+
   # Core Logic
   tflite_flutter: ^0.12.1 # Updated to support newer TFLite ops (FullyConnected v12)
   sqflite: ^2.3.0

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "398496217487",
+    "project_id": "anajai-c4c24",
+    "storage_bucket": "anajai-c4c24.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:398496217487:android:be5e2bca288667e22a33fa",
+        "android_client_info": {
+          "package_name": "com.example.anaj_ai_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuDmSJLWafAl5kHqaH06cBWMCG1pPN30E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

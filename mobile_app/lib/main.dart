@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'ui/dashboard_view.dart';
 import 'data/database_helper.dart';
+import 'services/auth_service.dart';
+import 'ui/auth_view.dart';
 
 // Background Task Entry Point
 @pragma('vm:entry-point') 
@@ -43,8 +47,11 @@ void callbackDispatcher() {
   });
 }
 
-void main() {
+
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   
   // Initialize Workmanager
   Workmanager().initialize(
@@ -66,10 +73,13 @@ void main() {
   runApp(DigitalDoctorApp());
 }
 
+
+
 class DigitalDoctorApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Anaj.ai',
       theme: ThemeData(
         primarySwatch: Colors.green,
@@ -77,7 +87,25 @@ class DigitalDoctorApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.white,
         fontFamily: 'Roboto', 
       ),
-      home: DashboardView(), // Uses the new UI
+      home: AuthWrapper(),
+    );
+  }
+}
+
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final authService = AuthService();
+    
+    return StreamBuilder<User?>(
+      stream: authService.user,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.active) {
+          final User? user = snapshot.data;
+          return user == null ? AuthView() : DashboardView();
+        }
+        return Scaffold(body: Center(child: CircularProgressIndicator()));
+      },
     );
   }
 }
