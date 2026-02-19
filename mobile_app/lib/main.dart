@@ -10,6 +10,7 @@ import 'ui/onboarding_view.dart';
 import 'ui/theme/app_theme.dart';
 import 'data/database_helper.dart';
 import 'logic/firebase_auth_service.dart';
+import 'logic/language_service.dart';
 import 'firebase_options.dart';
 
 // Background Task Entry Point
@@ -58,6 +59,9 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  
+  // Initialize Language Service
+  await LanguageService.initialize();
   
   // Initialize Workmanager
   Workmanager().initialize(

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'theme/app_theme.dart';
+import '../logic/firebase_auth_service.dart';
+import '../logic/language_service.dart';
+import '../logic/treatment_translations.dart';
 
 class SettingsView extends StatefulWidget {
   @override
@@ -10,8 +13,20 @@ class _SettingsViewState extends State<SettingsView> {
   bool _notificationsEnabled = true;
   bool _locationEnabled = true;
   bool _offlineMode = false;
-  String _selectedLanguage = 'English';
   String _selectedTheme = 'Light';
+
+  @override
+  void initState() {
+    super.initState();
+    // Load saved language preference
+    _loadLanguage();
+  }
+
+  void _loadLanguage() {
+    setState(() {
+      // Language is managed by LanguageService
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,19 +42,28 @@ class _SettingsViewState extends State<SettingsView> {
             _buildSectionHeader("General"),
             _buildSettingsTile(
               title: "Language",
-              subtitle: _selectedLanguage,
+              subtitle: LanguageService.currentLanguage,
               trailing: DropdownButton<String>(
-                value: _selectedLanguage,
-                items: ['English', 'Hindi', 'Marathi']
+                value: LanguageService.currentLanguage,
+                items: TreatmentTranslations.supportedLanguages
                     .map((lang) => DropdownMenuItem(
                           value: lang,
                           child: Text(lang),
                         ))
                     .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedLanguage = value!;
-                  });
+                onChanged: (value) async {
+                  if (value != null) {
+                    await LanguageService.setLanguage(value);
+                    setState(() {
+                      // Update UI with new language
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Language changed to $value'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
                 },
               ),
             ),
