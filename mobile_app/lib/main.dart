@@ -11,6 +11,8 @@ import 'ui/theme/app_theme.dart';
 import 'data/database_helper.dart';
 import 'logic/firebase_auth_service.dart';
 import 'logic/language_service.dart';
+import 'logic/app_logger.dart';
+import 'logic/performance_service.dart';
 import 'firebase_options.dart';
 
 // Background Task Entry Point
@@ -55,18 +57,29 @@ void callbackDispatcher() {
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
+  // Initialize logging first
+  AppLogger.info('========== AgriShield App Starting ==========');
+  
   // Initialize Firebase
+  AppLogger.info('Initializing Firebase...');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  AppLogger.info('Firebase initialized');
   
   // Initialize Language Service
+  AppLogger.info('Loading language preferences...');
   await LanguageService.initialize();
+  AppLogger.info('Language Service initialized: ${LanguageService.currentLanguage}');
+  
+  // Initialize Image Cache
+  ImageCacheService();
   
   // Initialize Workmanager
+  AppLogger.info('Initializing background tasks...');
   Workmanager().initialize(
     callbackDispatcher, 
-    isInDebugMode: true 
+    isInDebugMode: false 
   );
   
   // Register Periodic Task
@@ -79,6 +92,9 @@ void main() async {
       networkType: NetworkType.connected,
     )
   );
+  
+  AppLogger.info('Background tasks initialized');
+  AppLogger.info('========== App Ready to Start ==========');
 
   runApp(DigitalDoctorApp());
 }

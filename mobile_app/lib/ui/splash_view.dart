@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'theme/app_theme.dart';
 import 'main_dashboard_view.dart';
 import 'onboarding_view.dart';
+import '../logic/app_logger.dart';
+import '../logic/performance_service.dart';
 
 class SplashView extends StatefulWidget {
   @override
@@ -46,19 +48,40 @@ class _SplashViewState extends State<SplashView> with TickerProviderStateMixin {
   }
 
   void _navigateAfterDelay() async {
-    await Future.delayed(Duration(seconds: 3));
+    final monitor = PerformanceMonitor('App Initialization');
+    try {
+      AppLogger.info('Starting app initialization');
+      
+      // Reduced delay for faster app start (from 3s to 1.5s)
+      await Future.delayed(Duration(milliseconds: 1500));
 
-    final user = FirebaseAuth.instance.currentUser;
-    if (mounted) {
-      if (user != null) {
-        // User is logged in
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => MainDashboardView(),
-          ),
-        );
-      } else {
-        // User is not logged in, show onboarding
+      final user = FirebaseAuth.instance.currentUser;
+      AppLogger.info('Auth check: user=${user != null ? user.uid : "null"}');
+      
+      if (mounted) {
+        if (user != null) {
+          // User is logged in
+          AppLogger.info('Navigating to MainDashboard');
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => MainDashboardView(),
+            ),
+          );
+        } else {
+          // User is not logged in, show onboarding
+          AppLogger.info('Navigating to Onboarding');
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => OnboardingView(),
+            ),
+          );
+        }
+      }
+      monitor.complete(tag: 'success');
+    } catch (e, st) {
+      AppLogger.error('Navigation error', e, st, tag: 'splash');
+      monitor.complete(tag: 'error');
+      if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (context) => OnboardingView(),

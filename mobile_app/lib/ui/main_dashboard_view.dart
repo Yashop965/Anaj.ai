@@ -13,7 +13,10 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import '../logic/ai_service.dart';
 import '../logic/firebase_auth_service.dart';
+import '../logic/app_logger.dart';
+import '../logic/performance_service.dart';
 import 'widgets/custom_widgets.dart';
+import 'widgets/professional_widgets.dart';
 
 class MainDashboardView extends StatefulWidget {
   @override
@@ -48,28 +51,50 @@ class _MainDashboardViewState extends State<MainDashboardView> {
   }
 
   Future<void> _initApp() async {
-    bool success = await _aiService.loadModel();
-    await _initTts();
-    if (mounted) {
-      setState(() {
-        _isModelReady = success;
-        _isLoadingModel = false;
-      });
+    final monitor = PerformanceMonitor('App Initialization');
+    try {
+      AppLogger.info('Initializing app and loading AI model');
+      bool success = await _aiService.loadModel();
+      await _initTts();
+      
+      if (mounted) {
+        setState(() {
+          _isModelReady = success;
+          _isLoadingModel = false;
+        });
 
-      if (!success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Using Cloud Mode (Local AI Failed to Load)"),
-            backgroundColor: Colors.orange,
-          ),
-        );
+        if (!success) {
+          AppLogger.warn('Local model failed, using Cloud Mode', tag: 'ai_service');
+          await ErrorHandler.showSnackBar(
+            context,
+            message: "Using Cloud Mode (Local AI Failed to Load)",
+            isError: true,
+          );
+        } else {
+          AppLogger.info('Model loaded successfully');
+        }
+      }
+      monitor.complete(tag: 'model_loaded');
+    } catch (e, st) {
+      AppLogger.error('App initialization failed', e, st, tag: 'init');
+      monitor.complete(tag: 'error');
+      if (mounted) {
+        setState(() {
+          _isModelReady = false;
+          _isLoadingModel = false;
+        });
       }
     }
   }
 
   Future<void> _initTts() async {
-    await flutterTts.setLanguage("hi-IN");
-    await flutterTts.setPitch(1.0);
+    try {
+      await flutterTts.setLanguage("hi-IN");
+      await flutterTts.setPitch(1.0);
+      AppLogger.debug('TTS initialized');
+    } catch (e) {
+      AppLogger.warn('TTS initialization failed: $e', tag: 'tts');
+    }
   }
 
   Future<void> _retryLocalModel() async {
@@ -80,27 +105,43 @@ class _MainDashboardViewState extends State<MainDashboardView> {
   }
 
   Future<void> _scanCrop() async {
+    final monitor = PerformanceMonitor('Crop Scan');
     try {
+      AppLogger.info('Starting crop capture and analysis', tag: 'scan');
       final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
 
-      if (photo == null) return;
+      if (photo == null) {
+        AppLogger.info('User cancelled image selection');
+        return;
+      }
 
+      AppLogger.info('Image selected: ${photo.path}', tag: 'scan');
+      
       setState(() {
         _isScanning = true;
         _lastResult = null;
         _selectedImage = File(photo.path);
       });
 
+      AppLogger.info('Analyzing image for crop: $_selectedCrop', tag: 'scan');
       var result = await _aiService.analyzeImage(photo.path, _selectedCrop);
+      monitor.complete(tag: 'analysis_complete');
       _handleResult(result);
-    } catch (e) {
-      print("Camera Error: $e");
+    } on Exception catch (e, st) {
+      AppLogger.error('Crop scan failed', e, st, tag: 'scan');
+      monitor.complete(tag: 'error');
       setState(() {
         _isScanning = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error capturing image: $e")),
-      );
+      if (mounted) {
+        ErrorHandler.handleError(
+          context,
+          title: 'Scan Failed',
+          message: 'Could not analyze the image. Please try again.',
+          onRetry: _scanCrop,
+          buttonText: 'Retry',
+        );
+      }
     }
   }
 
