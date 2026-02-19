@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-// import 'logic/ai_router.dart'; // Deprecated in favor of AIService
 import 'ui/dashboard_view.dart';
 import 'data/database_helper.dart';
 
@@ -37,7 +36,7 @@ void callbackDispatcher() {
     const NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
-        0, 'Digital Doctor', 'Time to scan your crops for a better health score!', platformChannelSpecifics,
+        0, 'Anaj.ai', 'Time to scan your crops for a better health score!', platformChannelSpecifics,
         payload: 'item x');
 
     return Future.value(true);
@@ -76,87 +75,9 @@ class DigitalDoctorApp extends StatelessWidget {
         primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         scaffoldBackgroundColor: Colors.white,
-        fontFamily: 'Roboto', // Or any legible font
+        fontFamily: 'Roboto', 
       ),
-      home: DashboardView(),
-    );
-  }
-}
-
-class DashboardScreen extends StatefulWidget {
-  @override
-  _DashboardScreenState createState() => _DashboardScreenState();
-}
-
-class _DashboardScreenState extends State<DashboardScreen> {
-  final AIRouter _aiRouter = AIRouter();
-  String _status = "Ready to Scan";
-  
-  @override
-  void initState() {
-    super.initState();
-    _aiRouter.loadModel();
-  }
-
-  void _simulateScan() async {
-    setState(() {
-      _status = "Scanning...";
-    });
-    
-    // Simulate an image path
-    String mockImagePath = "/storage/emulated/0/DCIM/Camera/leaf_test.jpg";
-    
-    var result = await _aiRouter.processImage(mockImagePath);
-    
-    setState(() {
-      _status = "Result: ${result['label']} (Conf: ${result['confidence']})";
-      if (result.containsKey('message')) {
-         _status += "\n${result['message']}";
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Digital Doctor Dashboard')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Health Score: 85%', // Placeholder
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green),
-            ),
-            SizedBox(height: 20),
-            Container(
-              padding: EdgeInsets.all(20),
-              color: Colors.grey[200],
-              child: Text(
-                _status,
-                style: TextStyle(fontSize: 18),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: 40),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20),
-                backgroundColor: Colors.green[700], 
-              ),
-              onPressed: _simulateScan,
-              child: Text('SCAN CROP', style: TextStyle(fontSize: 20, color: Colors.white)),
-            ),
-             SizedBox(height: 20),
-             ElevatedButton(
-              onPressed: () {
-                 // Open History or Reports
-              },
-              child: Text('View Reports'),
-            ),
-          ],
-        ),
-      ),
+      home: DashboardView(), // Uses the new UI
     );
   }
 }

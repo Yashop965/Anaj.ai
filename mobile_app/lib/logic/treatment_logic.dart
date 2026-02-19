@@ -57,6 +57,59 @@ class TreatmentLogic {
   };
 
   static Map<String, dynamic> getPlan(String label) {
-    return _diseaseDatabase[label] ?? _diseaseDatabase['Unknown']!;
+    // 1. Exact Match
+    if (_diseaseDatabase.containsKey(label)) {
+      return _diseaseDatabase[label]!;
+    }
+
+    // 2. Partial Match (e.g., "Potato___Early_Blight" -> "Early Blight")
+    if (label.contains("Early_Blight")) return _diseaseDatabase['Early Blight']!;
+    if (label.contains("Late_Blight")) return _diseaseDatabase['Late Blight']!;
+    if (label.contains("Healthy")) return _diseaseDatabase['Healthy']!;
+    
+    // 3. New Specific Mappings for Corn/Rice/Wheat
+    if (label.contains("Common_Rust") || label.contains("Brown_Rust") || label.contains("Yellow_Rust")) {
+       return {
+          'hindi_name': 'रतुआ रोग (Rust)',
+          'action_plan': [
+             "Day 1: Isolates infected plants.",
+             "Day 2: Spray Mancozeb (2.5g/L).",
+             "Day 3: Check for orange pustules.",
+             "Day 4: Avoid overhead irrigation.",
+             "Day 5: Apply Propiconazole if severe.",
+             "Day 7: Re-scan."
+          ],
+          'audio_text': "Yeh Ratua Rog hai. Mancozeb ka chidkaav karein."
+       };
+    }
+
+    if (label.contains("Leaf_Blast") || label.contains("Neck_Blast")) {
+       return {
+          'hindi_name': 'झोंका रोग (Blast)',
+          'action_plan': [
+             "Day 1: Maintain water level.",
+             "Day 2: Spray Tricyclazole (0.6g/L).",
+             "Day 3: Remove infected weeds.",
+             "Day 4: Avoid excess Nitrogen.",
+             "Day 7: Re-scan."
+          ],
+          'audio_text': "Yeh Jhoka Rog hai. Tricyclazole ka upyog karein."
+       };
+    }
+    
+    if (label.contains("Gray_Leaf_Spot") || label.contains("Brown_Spot")) {
+       return {
+          'hindi_name': 'धब्बा रोग (Leaf Spot)',
+          'action_plan': [
+             "Day 1: Clean field sanitation.",
+             "Day 2: Spray Carbendazim (1g/L).",
+             "Day 5: Monitor progress.",
+             "Day 7: Re-scan."
+          ],
+          'audio_text': "Yeh Dhabba Rog hai. Carbendazim ka chidkaav karein."
+       };
+    }
+
+    return _diseaseDatabase['Unknown']!;
   }
 }

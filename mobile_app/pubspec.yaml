@@ -10,16 +10,20 @@ dependencies:
   flutter:
     sdk: flutter
   # Core Logic
-  tflite_flutter: ^0.10.1
+  tflite_flutter: ^0.12.1 # Updated to support newer TFLite ops (FullyConnected v12)
   sqflite: ^2.3.0
   path: ^1.8.3
   
+  # Media & Image Processing
+  image_picker: ^1.0.4
+  image: ^4.1.3 # For resizing/preprocessing
+
   # Background & Notifications
-  workmanager: ^0.5.1
-  flutter_local_notifications: ^16.0.0
+  workmanager: ^0.9.0 # Updated to fix Android embedding issues
+  flutter_local_notifications: ^18.0.0 # Updated to fix BigPictureStyle error
   
   # Networking
-  http: ^1.1.0
+  http: ^1.6.0
   connectivity_plus: ^5.0.0 # To check internet connection
   
   # Audio
@@ -39,5 +43,6 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/models/
+    - assets/models/crop_slm.tflite
+    - assets/models/labelmap.txt
     - assets/i18n/
