@@ -1,0 +1,162 @@
+{
+    "diseases": [
+        {
+            "crop_name": "Corn (Makka)",
+            "disease_name_en": "Common Rust",
+            "disease_name_hi": "मक्का का रतुआ (Makka ka Ratuwa)",
+            "symptoms": "Reddish-brown pustules on both upper and lower leaf surfaces.",
+            "treatment_plan_7_days": {
+                "day_1": "Scout & Isolate: Mark infected areas. Prune lower infected leaves if infection is minor.",
+                "day_2": "Chemical Spray: Apply a fungicide containing Azoxystrobin or Propiconazole (1ml/liter).",
+                "day_3": "Water Management: Stop overhead watering to keep leaves dry; ensure good air circulation.",
+                "day_5": "Nutrient Boost: Apply a foliar spray of Potassium (K) to strengthen plant cell walls.",
+                "day_7": "Verification: Check for new reddish-brown pustules. If stopped, resume standard care."
+            },
+            "rag_land_info": "In Haryana, rust thrives during the humid Kharif (monsoon) season (July-August). Avoid excessive urea application, which is common in regional loamy soils, as it makes the canopy too dense and traps humidity."
+        },
+        {
+            "crop_name": "Corn (Makka)",
+            "disease_name_en": "Gray Leaf Spot",
+            "disease_name_hi": "ग्रे पत्ती धब्बा (Gray Patti Dhabba)",
+            "symptoms": "Rectangular, gray-to-tan lesions restricted by leaf veins.",
+            "treatment_plan_7_days": {
+                "day_1": "Sanitation: Clear away crop debris from the soil surface where the fungus survives.",
+                "day_2": "Treatment: Spray a Pyraclostrobin-based fungicide early in the morning.",
+                "day_4": "Observation: Closely monitor the 'ear leaf' (the leaf near the cob) to protect yield.",
+                "day_7": "Follow-up: If the weather remains humid, prepare for a second spray at day 14."
+            },
+            "rag_land_info": "The pathogen survives heavily in crop stubble. Given Haryana's intensive crop rotation practices (often Rice-Wheat-Maize), deep plowing of residue is crucial to prevent outbreaks in the subsequent Kharif season."
+        },
+        {
+            "crop_name": "Corn (Makka)",
+            "disease_name_en": "Northern Leaf Blight",
+            "disease_name_hi": "उत्तरी मक्का पत्ती झुलसा (Uttari Makka Patti Jhulsa)",
+            "symptoms": "Large, elongated, cigar-shaped grayish-green to tan lesions. Often begins on lower leaves and moves upward.",
+            "treatment_plan_7_days": {
+                "day_1": "Assessment: Check if lesions are nearing the ear leaf, which dictates the urgency of treatment.",
+                "day_2": "Treatment: Spray Mancozeb (2.5g/liter) or Propiconazole.",
+                "day_4": "Moisture Control: Restrict watering to the root zone only to keep the leaf canopy dry.",
+                "day_7": "Verification: Re-scan with DocFarm. Lesions should turn crisp and tan, indicating the fungus is halted."
+            },
+            "rag_land_info": "Favored by the moderate temperatures and high humidity of the late monsoon in Haryana. Sandy-loam soils in regions like Karnal or Kurukshetra need careful moisture management to prevent prolonged canopy wetness."
+        },
+        {
+            "crop_name": "Potato (Aloo)",
+            "disease_name_en": "Early Blight",
+            "disease_name_hi": "अगेती झुलसा (Ageti Jhulsa)",
+            "symptoms": "Dark brown to black lesions with concentric rings (target-board appearance) on older leaves.",
+            "treatment_plan_7_days": {
+                "day_1": "Sanitation: Hand-pick and safely destroy the yellowing lower leaves.",
+                "day_2": "Treatment: Spray Chlorothalonil or Mancozeb.",
+                "day_3": "Nutrition: Increase Nitrogen application slightly.",
+                "day_7": "Verification: Inspect the new upper canopy. If clean, the spread is stopped."
+            },
+            "rag_land_info": "Prevalent in Haryana's potato belts (like Kurukshetra and Yamunanagar) during the drier, cooler Rabi season. Sandy soils with poor moisture retention exacerbate plant stress, inviting early blight. Ensure balanced NPK application."
+        },
+        {
+            "crop_name": "Potato (Aloo)",
+            "disease_name_en": "Late Blight",
+            "disease_name_hi": "पछेती झुलसा (Pacheti Jhulsa)",
+            "symptoms": "Water-soaked, dark green to black lesions on leaves and stems; white fungal growth underneath in wet conditions.",
+            "treatment_plan_7_days": {
+                "day_1": "Emergency: Immediately cut and bury any plants showing water-soaked black stems.",
+                "day_2": "Treatment: Spray a fast-acting systemic fungicide like Metalaxyl.",
+                "day_3": "Water Stop: Halt all overhead irrigation completely.",
+                "day_5": "Protection: Spray a contact fungicide like Copper Oxychloride to shield remaining crops.",
+                "day_7": "Harvest Check: Check underground tubers. If stems are dry, harvest early to save yield."
+            },
+            "rag_land_info": "CRITICAL: Highly destructive during the heavy winter fogs and dew (December-January) typical in northern Haryana. Spores spread rapidly in morning moisture. Avoid planting in low-lying, frost-prone field patches."
+        },
+        {
+            "crop_name": "Rice (Dhaan)",
+            "disease_name_en": "Brown Spot",
+            "disease_name_hi": "भूरा धब्बा (Bhura Dhabba)",
+            "symptoms": "Oval to circular brown spots with gray or whitish centers on leaves.",
+            "treatment_plan_7_days": {
+                "day_1": "Soil Check: Recognize that this often indicates poor soil nutrition.",
+                "day_2": "Treatment: Spray Ediphenphos or Mancozeb.",
+                "day_3": "Soil Amendment: Apply Potash (K) and a slight Nitrogen boost directly to the soil.",
+                "day_7": "Verification: Monitor the flag leaf. If spots stop expanding, recovery has begun."
+            },
+            "rag_land_info": "A strong indicator of nutrient-depleted soils, specifically in the lighter, sandy-loam areas of south-western Haryana (e.g., Sirsa, Hisar). Ensure proper Potassium (and Zinc, which is often deficient in Haryana soils) application."
+        },
+        {
+            "crop_name": "Rice (Dhaan)",
+            "disease_name_en": "Leaf Blast",
+            "disease_name_hi": "धान की पत्ती का झोंका (Dhaan ki Patti ka Jhonka)",
+            "symptoms": "Spindle or diamond-shaped lesions with grey or white centers and brown or reddish-brown borders.",
+            "treatment_plan_7_days": {
+                "day_1": "Nutrient Halt: Pause all Nitrogen fertilizer applications immediately, as high nitrogen fuels the fungus.",
+                "day_2": "Treatment: Spray Tricyclazole 75 WP (0.6g/liter) or Isoprothiolane.",
+                "day_3": "Water Management: Avoid field drainage. Maintain a continuous deep water level (4-6 inches) to reduce drought stress.",
+                "day_7": "Verification: Check the new upper leaves. If no new diamond spots appear, the spread is halted."
+            },
+            "rag_land_info": "Thrives during the humid Haryana monsoon (August-September), especially in areas heavily fertilized with Urea. The alluvial soils of the 'Basmati belt' (Karnal, Kaithal) are highly susceptible if drought stress occurs between irrigations."
+        },
+        {
+            "crop_name": "Rice (Dhaan)",
+            "disease_name_en": "Neck Blast",
+            "disease_name_hi": "धान की गर्दन का झोंका (Dhaan ki Gardan ka Jhonka)",
+            "symptoms": "Brownish-black rotting at the base of the panicle (the neck). The infected tissue shrivels, causing the stem to break and leading to empty 'whiteheads'.",
+            "treatment_plan_7_days": {
+                "day_1": "Emergency Assessment: Neck blast is highly destructive. Identify the percentage of panicles affected.",
+                "day_2": "Treatment: Immediately spray a systemic fungicide like Tricyclazole or Azoxystrobin (e.g., Quadris).",
+                "day_3": "Water Management: Maintain deep water levels and avoid aerobic soil conditions.",
+                "day_7": "Follow-up Check: Inspect the 'Neck' of unaffected panicles. If they remain green and continue to fill with grain, the harvest is protected."
+            },
+            "rag_land_info": "The most destructive phase in Haryana's Basmati rice belt. High humidity and cooling nights in late September/October trigger this. Preventative sprays are critical before the heading stage in these specific climate conditions."
+        },
+        {
+            "crop_name": "Wheat (Gehun)",
+            "disease_name_en": "Brown Rust",
+            "disease_name_hi": "भूरा रतुआ (Bhura Ratuwa)",
+            "symptoms": "Small, circular, orange-brown pustules primarily on the upper surface of leaves.",
+            "treatment_plan_7_days": {
+                "day_1": "Field Scout: Identify the spread of the orange-brown pustules.",
+                "day_2": "Treatment: Spray Tebuconazole or Propiconazole (1ml/liter).",
+                "day_5": "Observation: Check beneath the leaves. Active rust should start turning black.",
+                "day_7": "Verification: Touch the leaves; no new orange powder should rub off on fingers."
+            },
+            "rag_land_info": "Usually appears in Haryana during late February or March as daytime temperatures begin to rise. Heavily irrigated, dense wheat fields in the alluvial plains are highly susceptible to rapid spread."
+        },
+        {
+            "crop_name": "Wheat (Gehun)",
+            "disease_name_en": "Yellow Rust",
+            "disease_name_hi": "पीला रतुआ (Peela Ratuwa)",
+            "symptoms": "Yellow-orange pustules arranged in distinct linear stripes along the leaf veins.",
+            "treatment_plan_7_days": {
+                "day_1": "Emergency: Treat immediately, as this damages yield much faster than brown rust.",
+                "day_2": "Treatment: Spray Triadimefon or Tebuconazole.",
+                "day_4": "Observation: Monitor the field daily for continued spread.",
+                "day_7": "Verification: If the yellow stripes have dried up and crusted, the crop is safe."
+            },
+            "rag_land_info": "A major threat in the cooler, northern districts of Haryana (Panchkula, Ambala, Yamunanagar) during the cold months of January and February. The sub-mountainous soil regions with heavy morning dew are prime hotspots."
+        },
+        {
+            "crop_name": "Sugarcane (Ganna)",
+            "disease_name_en": "Bacterial Blight",
+            "disease_name_hi": "जीवाणु झुलसा (Jeewanu Jhulsa)",
+            "symptoms": "Long, narrow, red-to-brown stripes running parallel to the leaf veins.",
+            "treatment_plan_7_days": {
+                "day_1": "Pruning: Remove leaves with red stripes immediately (fungicides won't work).",
+                "day_2": "Treatment: Spray Copper Oxychloride to act as a bactericide.",
+                "day_4": "Drainage: Improve field drainage.",
+                "day_7": "Assessment: Evaluate the spread. If severe, plan for an early harvest."
+            },
+            "rag_land_info": "Common in the sugarcane belts of eastern Haryana (Yamunanagar, Rohtak) during heavy monsoon waterlogging. The region's heavy clay-loam soils can retain excess water, creating a breeding ground for bacteria. Improve trench drainage."
+        },
+        {
+            "crop_name": "Sugarcane (Ganna)",
+            "disease_name_en": "Red Rot",
+            "disease_name_hi": "लाल सड़न रोग (Laal Sadan)",
+            "symptoms": "Internal red rotting of the cane stem with white patches across the stalk; emits a sour, alcoholic smell.",
+            "treatment_plan_7_days": {
+                "day_1": "Eradication: Dig out the entire infected clump (roots and all) and burn it.",
+                "day_2": "Soil Drench: Drench the empty soil spot with Carbendazim (0.1%).",
+                "day_3": "Trenching: Dig a small isolation trench around the infected zone.",
+                "day_7": "Containment Watch: Treat this as a containment protocol and watch neighboring plants."
+            },
+            "rag_land_info": "The 'Cancer of Sugarcane', prevalent in Haryana's older sugarcane tracts. It survives in infected stubble. Strictly avoid ratooning (growing a second crop from the same roots) in infected fields, a common practice in the region, to break the cycle."
+        }
+    ]
+}
