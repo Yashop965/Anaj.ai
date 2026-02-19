@@ -3,8 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'ui/dashboard_view.dart';
+import 'ui/splash_view.dart';
+import 'ui/main_dashboard_view.dart';
 import 'ui/login_view.dart';
+import 'ui/onboarding_view.dart';
 import 'ui/theme/app_theme.dart';
 import 'data/database_helper.dart';
 import 'logic/firebase_auth_service.dart';
@@ -86,26 +88,7 @@ class DigitalDoctorApp extends StatelessWidget {
       title: 'Anaj.ai',
       theme: AppTheme.getTheme(),
       debugShowCheckedModeBanner: false,
-      home: StreamBuilder<User?>(
-        stream: _firebaseAuth.authStateChanges,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-
-          // User is logged in
-          if (snapshot.hasData) {
-            return DashboardView();
-          }
-
-          // User is not logged in
-          return LoginView();
-        },
-      ),
+      home: SplashView(),
     );
   }
 }
